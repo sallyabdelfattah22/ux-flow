@@ -111,7 +111,9 @@ def entry(art):
         elif el.name == 'table':
             out.append(table(el))
         elif el.name == 'ul' and not el.find_parent(class_='dcard'):
-            out += ['- ' + text(li) for li in el.find_all('li', recursive=False) if text(li)]
+            items = ['- ' + text(li) for li in el.find_all('li', recursive=False) if text(li)]
+            if items:
+                out.append('\n'.join(items))
         elif el.name == 'div' and 'chips' in cls:
             chips = [text(s) for s in el.find_all('span')]
             if chips:
@@ -128,7 +130,10 @@ def entry(art):
                 line += f' → **{dl["Decision"].strip("*")}**'
             else:
                 line += f' — {st}. Options: {dl.get("Options", "")}'
-            out.append(line)
+            if out and out[-1].startswith('- **'):
+                out[-1] += '\n' + line
+            else:
+                out.append(line)
         elif el.name == 'div' and 'lbl' in cls:
             out.append('**' + text(el) + '**')
         elif el.name == 'div' and 'srow' in cls:

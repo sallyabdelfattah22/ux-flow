@@ -33,7 +33,7 @@ Shared values live only in General; a flow tab records only what is specific or 
 - **Edit only the files the user allows.** When the user names a file as off-limits (or names the only file to edit), never write to the other files, not even the snapshot; their fixes stay *Proposed* in the guide, and Before / after says the file is read-only. If such a file was already edited, offer to revert it exactly.
 - **Spacing is visualized.** Every repeated container gets a to-scale diagram (`scripts/anatomy.py`): padding, gaps, sizes, radius, with token chips.
 - **No screenshots or images** in the guide. Screenshots are taken only so Claude can see the screens; never published.
-- **Two outputs, nothing else.** The guide and its .md. Tokens are a CSS block with a Copy button; the .md is published beside the guide (linked in the intro, with a Save .md button through the `downloads` capability) and sent to the user as a file.
+- **Two outputs, nothing else.** The guide and its .md. Tokens are a CSS block with a Copy button; the .md is embedded in the guide (View .md panel with Copy, and Save .md through the `downloads` capability), published beside it and sent to the user as a file.
 - **Audit always included**, in each flow's Audit chapter.
 - Visuals and tables over prose; one-line answers; no intros or conclusions. Status pills: In Figma · Proposed · Needs decision · Decided D-00x. Never present a proposal as a measurement; never round a measured value.
 
