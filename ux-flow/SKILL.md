@@ -1,6 +1,6 @@
 ---
 name: ux-flow
-description: One-link UX handoff for a Figma flow or screenshots. Every run, without being asked, it measures the frames, audits them with the ux-audit checklist, and updates ONE visual developer guide per product (a published HTML page) plus its developer .md (the same content as Markdown, user flows as Mermaid) — a General tab with the shared design system (spacing, type, radius, grid, shell, component sizes, tokens, system issues) plus one tab per flow (notes, user flow diagram, to-scale layout spacing, responsive rules, components and states, clicks, data formats, before/after, decisions, audit). A later run with the same link updates that flow's tab. Use this whenever the user pastes a Figma flow, section or frame link (or screenshots) and wants it documented, audited or handed off, even with no instructions, or says "run ux-flow", "full pass", "re-run on this flow", or "what changed".
+description: One-link UX handoff for any design source — a Figma flow, screenshots, or a prototype or app built with an AI tool (a live URL or its code), with no Figma needed. Every run, without being asked, it measures the frames, audits them with the ux-audit checklist, and updates ONE visual developer guide per product (a published HTML page) plus its developer .md (the same content as Markdown, user flows as Mermaid) — a General tab with the shared design system (spacing, type, radius, grid, shell, component sizes, tokens, system issues) plus one tab per flow (notes, user flow diagram, to-scale layout spacing, responsive rules, components and states, clicks, data formats, before/after, decisions, audit). A later run with the same link updates that flow's tab. Use this whenever the user pastes a Figma flow, section or frame link, screenshots, or a link to (or the code of) an AI-built prototype or app and wants it documented, audited or handed off, even with no instructions, or says "run ux-flow", "full pass", "re-run on this flow", or "what changed".
 ---
 
 # UX Flow
@@ -39,7 +39,7 @@ Shared values live only in General; a flow tab records only what is specific or 
 
 ## 0. Read the link and the context
 
-1. From the URL take `fileKey` and `node-id`. No `node-id` → list pages and ask which flow.
+1. **Source.** Figma link → take `fileKey` and `node-id` (no `node-id` → list pages and ask which flow). Screenshots, or a prototype or app made with an AI tool (a live URL, an artifact, or its code) → see *Other sources* below. Never assume the design lives in Figma.
 2. **Product** from the frames (sidebar logo, header) or memory; **flow name** from the section or frame.
 3. **Scope.** List the node's children with a small `use_figma` read (not `get_metadata`, which overflows). More than 20 frames → ask once which part (`AskUserQuestion`, recommended first) and pass those frame IDs to the scripts.
 4. **Context** for the audit (user, platform, direction): ask only for what is missing.
@@ -47,7 +47,11 @@ Shared values live only in General; a flow tab records only what is specific or 
 
 Figma rules: load `figma-use` before any `use_figma` call; the snapshot writes, so also load `figma-generate-design` and pass both in `skillNames`. Switch pages at most once per call. Results are capped at 48 KB: keep reads compact.
 
-**Screenshots instead of Figma**: skip snapshot and scripts, read each image, mark values `~approx`, still update the guide.
+**Other sources (no Figma).** The guide, the .md, the audit and every rule above stay the same; only measuring and the baseline change.
+- **Screenshots**: read each image, mark values `~approx`, no snapshot.
+- **A prototype or app built with an AI tool** (live URL, artifact, or code in a repo): open it with Playwright (or the browser tools) at 1440, 1024, 768 and 390 wide, and read real values with `getComputedStyle`: padding, gap, size, radius, font family / size / weight / line-height, colors, and the CSS custom properties (tokens) they use. Routes, links and buttons give the user flow; each state you can reach gives the states matrix. Take screenshots only to look and audit, never to publish. With the code, read tokens and components from it (CSS variables, Tailwind config, component props) and link files instead of Figma frames.
+- **Baseline** for a later run: a JSON of the measured values saved next to the guide's build (or the commit hash), instead of an "Audit – before" page.
+- **Changes**: the same ask-first rule, applied to the code or the AI tool's project instead of Figma; Before / after links the commit or the changed file.
 
 ## 1. Snapshot (first run of a flow)
 

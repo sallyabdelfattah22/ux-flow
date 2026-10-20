@@ -1,8 +1,8 @@
 # ux-flow
 
-A Claude skill that turns one Figma flow link into a developer handoff guide.
+A Claude skill that turns one design link into a developer handoff guide: a Figma flow, screenshots, or a prototype or app built with an AI tool.
 
-Paste a Figma flow link (or screenshots). Claude measures the screens, audits them, and adds them to **one visual guide per product**: a **General** tab with the shared design system, plus **one tab per flow**. It also writes a **developer .md** with the same content as Markdown (user flows as Mermaid), ready for repos and AI coding tools.
+Paste a Figma flow link, screenshots, or a link to a prototype built with an AI tool (no Figma needed). Claude measures the screens, audits them, and adds them to **one visual guide per product**: a **General** tab with the shared design system, plus **one tab per flow**. It also writes a **developer .md** with the same content as Markdown (user flows as Mermaid), ready for repos and AI coding tools.
 
 ## What each flow gets
 
@@ -26,8 +26,8 @@ Paste a Figma flow link (or screenshots). Claude measures the screens, audits th
 
 1. Download [`ux-flow.zip`](ux-flow.zip) from this repo (click it, then **Download raw file**).
 2. In Claude, open your skills settings and upload `ux-flow.zip` as a custom skill.
-3. Connect Figma in Claude's connectors (needed for links; screenshots work without it).
-4. Paste a Figma flow link, or say `run ux-flow`.
+3. For Figma links, connect Figma in Claude's connectors. Screenshots and AI-built prototypes work without it.
+4. Share your design (Figma link, screenshots or prototype link), or say `run ux-flow`.
 
 ## What's inside
 
