@@ -1,0 +1,763 @@
+<title>Team Smart Layout Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: reference book in Team Smart's own shell — sticky search bar, chapter index left, entries right.
+   Palette and type come from the Team Smart Figma variables (dark mode is the product default).
+   Overlay colours follow devtools/Figma habits: orange = page padding, green = padding, purple = gap, red = 8px grid. */
+:root{
+  --bg:#F6F6F6; --surface:#FFFFFF; --surface-2:#EEEEF2; --line:#D4D4D4; --ink:#121319; --muted:#5C5C66;
+  --accent:#6A4BB5; --accent-fill:#DEC9FF; --accent-ink:#121319; --accent-soft:#F1EAFF;
+  --success:#007D6C; --warning:#B28800; --danger:#C7222E; --mark:#FFE58A; --mark-ink:#121319;
+  --ov-grid:rgba(229,62,90,.10); --ov-grid-line:rgba(229,62,90,.45);
+  --ov-pad:rgba(3,160,130,.18); --ov-pad-ink:#007D6C;
+  --ov-gap:rgba(140,82,214,.20); --ov-gap-ink:#6A4BB5;
+  --ov-margin:rgba(236,140,30,.22); --ov-margin-ink:#9A5A00;
+  --f-body:"Poppins", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121319; --surface:#1D1D1F; --surface-2:#292931; --line:#46464F; --ink:#F6F6F6; --muted:#A0A0A0;
+  --accent:#DEC9FF; --accent-fill:#DEC9FF; --accent-ink:#121319; --accent-soft:#2C2638;
+  --success:#03D5AB; --warning:#F2C744; --danger:#FF6767; --mark:#6B5A12; --mark-ink:#FFF4C2;
+  --ov-grid:rgba(255,99,125,.10); --ov-grid-line:rgba(255,120,145,.5);
+  --ov-pad:rgba(3,213,171,.16); --ov-pad-ink:#03D5AB;
+  --ov-gap:rgba(222,201,255,.20); --ov-gap-ink:#DEC9FF;
+  --ov-margin:rgba(255,170,60,.18); --ov-margin-ink:#FFC175;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#121319; --surface:#1D1D1F; --surface-2:#292931; --line:#46464F; --ink:#F6F6F6; --muted:#A0A0A0;
+  --accent:#DEC9FF; --accent-fill:#DEC9FF; --accent-ink:#121319; --accent-soft:#2C2638;
+  --success:#03D5AB; --warning:#F2C744; --danger:#FF6767; --mark:#6B5A12; --mark-ink:#FFF4C2;
+  --ov-grid:rgba(255,99,125,.10); --ov-grid-line:rgba(255,120,145,.5);
+  --ov-pad:rgba(3,213,171,.16); --ov-pad-ink:#03D5AB;
+  --ov-gap:rgba(222,201,255,.20); --ov-gap-ink:#DEC9FF;
+  --ov-margin:rgba(255,170,60,.18); --ov-margin-ink:#FFC175;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.6}
+a{color:var(--accent)}
+code{font-family:var(--f-mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* Top bar — mirrors the product header: 60px, 12/24 padding */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:16px;min-height:60px;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.brand{font-weight:700;font-size:15px;white-space:nowrap;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand-mark{width:28px;height:28px;border-radius:8px;background:var(--accent-fill);color:var(--accent-ink);display:grid;place-items:center;font-size:12px;font-weight:700;letter-spacing:-.02em}
+.brand small{font-weight:400;color:var(--muted)}
+.search{position:relative;flex:1;max-width:520px;margin-left:auto}
+.search input{width:100%;font:inherit;font-size:14px;height:36px;padding:0 40px 0 36px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 6px}
+.results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 40px -12px rgba(0,0,0,.4);max-height:min(70vh,520px);overflow:auto;padding:6px}
+.result{display:block;width:100%;text-align:left;font:inherit;background:none;border:0;color:var(--ink);padding:10px 12px;border-radius:8px;cursor:pointer}
+.result[aria-selected="true"],.result:hover{background:var(--accent-soft)}
+.r-ch{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.r-t{font-weight:600;display:block}
+.r-s{font-size:12px;color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.result mark{background:var(--mark);color:var(--mark-ink);border-radius:2px;padding:0 1px}
+.empty{padding:14px 12px;color:var(--muted)}
+
+/* Book */
+.book{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:232px minmax(0,1fr);gap:40px;padding-block:32px 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);align-self:start;max-height:calc(100vh - 110px);overflow:auto;font-size:13px}
+.toc summary{display:none}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc>details>ol>li{margin-bottom:16px}
+.toc .ch{font-weight:600;font-size:14px;color:var(--ink);text-decoration:none;display:flex;gap:8px}
+.toc .ch span{color:var(--muted);font-family:var(--f-mono);font-weight:400;font-size:11px;padding-top:2px;min-width:14px}
+.toc ol ol{margin-top:4px;border-left:1px solid var(--line);margin-left:6px}
+.toc ol ol a{display:block;padding:3px 0 3px 14px;color:var(--muted);text-decoration:none;margin-left:-1px;border-left:2px solid transparent}
+.toc ol ol a:hover{color:var(--ink)}
+.toc ol ol a.active{color:var(--accent);border-left-color:var(--accent)}
+main{min-width:0}
+
+.intro{padding-bottom:32px;border-bottom:1px solid var(--line);margin-bottom:40px}
+.eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-weight:700;font-size:clamp(30px,5vw,48px);line-height:1.05;letter-spacing:-.02em;margin:8px 0 14px;text-wrap:balance}
+.lede{font-size:16px;color:var(--muted);max-width:64ch;margin:0}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:12px;color:var(--muted)}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);height:28px;padding:0 12px;border-radius:20px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.key{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;font-size:12px;color:var(--muted);align-items:center}
+
+/* Status pills: where a value comes from */
+.st{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.02em;white-space:nowrap;vertical-align:middle}
+.st::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.st-fig{background:color-mix(in srgb,var(--success) 14%,transparent);color:var(--success)}
+.st-pro{background:var(--accent-soft);color:var(--accent)}
+.st-dec{background:color-mix(in srgb,var(--warning) 16%,transparent);color:var(--warning)}
+.st-ok{background:color-mix(in srgb,var(--ink) 9%,transparent);color:var(--ink)}
+a.st{text-decoration:none}
+
+.chapter{margin-bottom:64px}
+.ch-head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px}
+.ch-num{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+h2{font-weight:700;font-size:32px;line-height:1.15;letter-spacing:-.015em;margin:0;text-wrap:balance}
+.entry{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:16px;transition:box-shadow .4s}
+.entry.flash{box-shadow:0 0 0 3px var(--accent)}
+.e-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:8px}
+.entry h3{font-weight:600;font-size:20px;line-height:1.3;margin:0;text-wrap:balance}
+.entry h3 a{color:inherit;text-decoration:none}
+.entry>p{margin:0 0 14px;max-width:72ch}
+.answer{font-size:14px;border-left:3px solid var(--accent-fill);padding:2px 0 2px 14px;margin:0 0 18px;max-width:72ch}
+.answer b{font-weight:600}
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--muted);margin:22px 0 8px}
+.figlink{font-size:12px;color:var(--muted);margin-top:12px}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:top}
+th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td.wrap{white-space:normal;min-width:220px}
+
+/* Code */
+.code{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.code pre{margin:0;padding:16px;overflow-x:auto;font-family:var(--f-mono);font-size:12.5px;line-height:1.65}
+.copy{position:absolute;top:8px;right:8px;font:inherit;font-size:11px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:6px;padding:2px 10px;cursor:pointer}
+.copy:hover{color:var(--ink)}
+.tok{font-family:var(--f-mono);font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:1px 8px;cursor:pointer;color:var(--ink)}
+.tok:hover{border-color:var(--accent)}
+
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block;flex:none}
+
+/* Shell diagram */
+.diagram{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.diagram svg{display:block;width:100%;min-width:640px;height:auto}
+.shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
+.shot img{display:block;width:100%;height:auto}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.shots figure{margin:0}
+.shots figcaption{font-size:12px;color:var(--muted);margin-top:6px}
+
+.specs{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:16px}
+.spec{border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--bg)}
+.spec div{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.spec strong{font-size:22px;font-weight:600;display:block;font-variant-numeric:tabular-nums}
+
+/* Spacing scale */
+.srow{display:grid;grid-template-columns:96px 52px minmax(0,1fr);align-items:center;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.srow:last-child{border-bottom:0}
+.srow .bar{height:12px;background:var(--ov-pad);border-left:2px solid var(--ov-pad-ink);border-right:2px solid var(--ov-pad-ink)}
+.srow .use{grid-column:2/-1;font-size:12px;color:var(--muted);margin-top:-4px}
+.srow .px{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+
+/* Anatomy demos — real Team Smart components, rebuilt to measure */
+.anatomy{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;align-items:start}
+.annot{font-size:13px;display:grid;gap:12px}
+.annot>div{display:grid;grid-template-columns:16px minmax(0,1fr);gap:10px;align-items:start}
+.annot b{font-weight:600}
+.pad-box{background:var(--ov-pad);border-radius:12px;padding:24px;position:relative}
+.gap-stack{background:var(--ov-gap);display:flex;flex-direction:column;gap:16px}
+.gap-stack>*{background:var(--surface-2);margin:0}
+.d-title{font-size:18px;font-weight:600;line-height:27px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;background:var(--ov-gap)}
+.pill{height:28px;padding:0 12px;border-radius:20px;background:var(--surface);border:1px solid var(--line);font-size:12px;display:inline-flex;align-items:center;gap:6px}
+.d-lbl{font-size:14px;font-weight:500;line-height:18px}
+.d-txt{font-size:12px;line-height:18px;color:var(--muted)}
+.d-meta{font-size:10px;color:var(--muted);display:flex;gap:20px;flex-wrap:wrap}
+.tag{position:absolute;font-family:var(--f-mono);font-size:10px;font-weight:500;padding:0 5px;border-radius:4px;background:var(--surface);border:1px solid currentColor;line-height:16px}
+
+.mini-table{display:flex;flex-direction:column;gap:4px;background:var(--ov-gap);border-radius:12px;overflow:hidden;font-size:12px}
+.mt-row{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:20px;align-items:center;background:var(--surface-2);position:relative}
+.mt-row.h{min-height:44px;padding:0 24px;font-size:13px;font-weight:500;box-shadow:inset 24px 0 0 var(--ov-pad),inset -24px 0 0 var(--ov-pad)}
+.mt-row.r{min-height:64px;padding:0 24px;box-shadow:inset 24px 0 0 var(--ov-pad),inset -24px 0 0 var(--ov-pad);background:var(--surface)}
+.mt-row span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.modal-demo{max-width:480px;border-radius:16px;background:var(--ov-pad);padding:32px;position:relative}
+.modal-demo .stack{display:flex;flex-direction:column;gap:16px;background:var(--ov-gap)}
+.modal-demo .stack>*{background:var(--surface)}
+.m-h{font-size:18px;font-weight:500;line-height:22px}
+.fld{display:flex;flex-direction:column;gap:8px}
+.fld .l{font-size:14px;font-weight:500;line-height:20px}
+.fld .i{height:40px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.m-foot{display:flex;justify-content:flex-end;gap:12px;margin-top:32px;background:var(--ov-gap)}
+.btn{height:36px;padding:0 24px;border-radius:8px;font-size:14px;font-weight:500;display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.p{background:var(--accent-fill);border-color:var(--accent-fill);color:var(--accent-ink)}
+
+.nav-demo{background:var(--surface-2);border-radius:12px;padding:16px 28px;display:flex;flex-direction:column;gap:12px;max-width:280px;box-shadow:inset 28px 0 0 var(--ov-pad),inset -28px 0 0 var(--ov-pad);background-clip:padding-box}
+.nav-demo .it{height:40px;border-radius:8px;display:flex;align-items:center;gap:8px;padding-left:12px;font-size:13px;background:var(--surface)}
+.nav-demo .it.on{background:var(--accent-fill);color:var(--accent-ink);font-weight:500}
+.nav-demo .ic{width:20px;height:20px;border-radius:5px;border:1.5px solid currentColor;opacity:.7}
+
+/* Type */
+.ts{display:grid;grid-template-columns:170px minmax(0,1fr);gap:20px;padding:16px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.ts:last-child{border-bottom:0}
+.ts .meta{font-size:11px;color:var(--muted);font-family:var(--f-mono);line-height:1.7}
+.ts .sample{overflow-wrap:anywhere;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:3px;background:var(--bg);flex-wrap:wrap}
+.seg button{font:inherit;font-size:12px;border:0;background:none;color:var(--muted);padding:5px 12px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);font-weight:600}
+
+.issues{display:grid;gap:10px}
+.issue{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--bg)}
+.issue .what{font-weight:600}
+.issue .why{font-size:13px;color:var(--muted)}
+
+footer{margin-top:40px;font-size:12px;color:var(--muted)}
+
+@media (max-width:900px){
+  .book{grid-template-columns:minmax(0,1fr);gap:20px;padding-block:20px 72px}
+  .toc{position:static;max-height:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px 16px}
+  .toc summary{display:block;cursor:pointer;padding:10px 0;font-weight:600}
+  .toc>details>ol{padding-bottom:12px}
+  .brand small{display:none}
+}
+@media (max-width:600px){
+  .entry{padding:18px 16px}
+  h2{font-size:26px}
+  .ts{grid-template-columns:minmax(0,1fr);gap:4px}
+  .kbd{display:none}
+  .pad-box,.modal-demo{padding:16px}
+  .mt-row.h,.mt-row.r{padding:0 16px;box-shadow:none}
+}
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">TS</span><span>Team Smart <small>Layout Guide</small></span></a>
+    <div class="search" role="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search: table row height, modal padding, H2…" autocomplete="off" aria-label="Search the layout guide" aria-controls="results" aria-expanded="false">
+      <span class="kbd" aria-hidden="true">/</span>
+      <div class="results" id="results" role="listbox" hidden></div>
+    </div>
+  </div>
+</header>
+
+<div class="book" id="top">
+  <nav class="toc" aria-label="Chapters">
+    <details id="toc-details" open>
+      <summary>Contents</summary>
+      <ol id="toc-list"></ol>
+    </details>
+  </nav>
+
+  <main>
+    <section class="intro">
+      <div class="eyebrow">Team Smart · Design layout documentation · v0.3</div>
+      <h1>How every Team Smart screen is put together.</h1>
+      <p class="lede">The app shell, spacing, page patterns and type used across the workforce tools for air traffic control teams. Every number here was measured in the Figma file. Search for what you are building, read the answer, copy the token.</p>
+      <div class="meta-row">
+        <span>Source: <a href="https://www.figma.com/design/x5UISMGpSHxp0MACr6my1K/Sally--Design-System?node-id=164-5406" target="_blank" rel="noopener">Sally – Design System › Job roles</a></span>
+        <span>Measured: 19 Oct 2026</span>
+        <span>Owner: Sally (UX)</span>
+        <span><a href="https://claude.ai/code/artifact/c1240e14-20b5-4c00-ba0c-02b647532dec" target="_blank" rel="noopener">Decision log</a></span>
+      </div>
+      <div class="key">
+        <span><span class="st st-fig">In Figma</span> measured or defined as a variable</span>
+        <span><span class="st st-pro">Proposed</span> recommendation, not yet in Figma</span>
+        <span><span class="st st-ok">Decided</span> agreed in the decision log</span>
+        <span><span class="st st-dec">Needs decision</span> inconsistent or missing</span>
+      </div>
+      <div class="quick" aria-label="Popular searches">
+        <button class="chip" data-q="page padding">Page padding</button>
+        <button class="chip" data-q="table row">Table row height</button>
+        <button class="chip" data-q="modal">Modal</button>
+        <button class="chip" data-q="card padding">Card padding</button>
+        <button class="chip" data-q="sidebar">Sidebar</button>
+        <button class="chip" data-q="font size">Font sizes</button>
+      </div>
+    </section>
+
+    <!-- ============ 1. APP SHELL ============ -->
+    <section class="chapter" id="shell" data-title="App shell">
+      <div class="ch-head"><span class="ch-num">Ch. 1</span><h2>App shell</h2></div>
+
+      <article class="entry" id="shell-anatomy" data-k="layout frame structure sidebar header page title content footer 1440 desktop shell regions">
+        <div class="e-head"><h3><a href="#shell-anatomy">The five regions of every screen</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Every screen is a <b>1440px</b> desktop frame split into a fixed <b>280px sidebar</b> and a <b>1160px</b> main column. The main column stacks four regions top to bottom: <b>header 60px</b>, <b>page title 68px</b> (88px with a back link), <b>content</b>, and <b>footer 54px</b>. Content has <b>24px</b> padding left and right, leaving <b>1112px</b> for content.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 1440 900" role="img" aria-label="Diagram of the 1440 by 900 app shell with sidebar, header, page title, content and footer">
+            <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="var(--ov-grid-line)" stroke-width=".5" opacity=".5"/></pattern></defs>
+            <rect x="0" y="0" width="1440" height="900" fill="var(--surface)"/>
+            <rect x="0" y="0" width="280" height="900" fill="var(--surface-2)"/>
+            <rect x="280" y="0" width="1160" height="60" fill="var(--surface-2)" opacity=".6"/>
+            <rect x="280" y="60" width="1160" height="68" fill="var(--accent-soft)"/>
+            <rect x="280" y="128" width="24" height="718" fill="var(--ov-margin)"/>
+            <rect x="1416" y="128" width="24" height="718" fill="var(--ov-margin)"/>
+            <rect x="304" y="128" width="1112" height="718" fill="url(#g8)"/>
+            <rect x="304" y="128" width="1112" height="718" fill="none" stroke="var(--ov-grid-line)" stroke-dasharray="6 6"/>
+            <rect x="280" y="846" width="1160" height="54" fill="var(--surface-2)" opacity=".6"/>
+            <g font-family="Poppins, sans-serif" fill="var(--ink)">
+              <text x="140" y="430" text-anchor="middle" font-size="26" font-weight="600">Sidebar</text>
+              <text x="140" y="466" text-anchor="middle" font-size="22" fill="var(--muted)">280 × full height</text>
+              <text x="860" y="38" text-anchor="middle" font-size="22" font-weight="600">Header · 60 · padding 12 / 24</text>
+              <text x="860" y="102" text-anchor="middle" font-size="22" font-weight="600">Page title · 68 (88 with back link) · padding 16 / 24</text>
+              <text x="860" y="470" text-anchor="middle" font-size="30" font-weight="600">Content · 1112 wide</text>
+              <text x="860" y="506" text-anchor="middle" font-size="22" fill="var(--muted)">8px base grid · sections 32 apart</text>
+              <text x="860" y="880" text-anchor="middle" font-size="22" font-weight="600">Footer · 54 · centred</text>
+              <text x="292" y="300" text-anchor="middle" font-size="18" fill="var(--ov-margin-ink)" transform="rotate(-90 292 300)">24</text>
+              <text x="1428" y="300" text-anchor="middle" font-size="18" fill="var(--ov-margin-ink)" transform="rotate(-90 1428 300)">24</text>
+            </g>
+          </svg>
+        </div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--ov-margin)"></i>Main page padding (24)</span>
+          <span><i class="sw" style="background:var(--accent-soft)"></i>Page title bar</span>
+          <span><i class="sw" style="border:1px dashed var(--ov-grid-line);background:var(--ov-grid)"></i>Content area on the 8px grid</span>
+        </div>
+        <div class="specs">
+          <div class="spec"><div>Frame</div><strong>1440</strong></div>
+          <div class="spec"><div>Sidebar</div><strong>280</strong></div>
+          <div class="spec"><div>Main column</div><strong>1160</strong></div>
+          <div class="spec"><div>Content</div><strong>1112</strong></div>
+          <div class="spec"><div>Page padding</div><strong>24</strong></div>
+        </div>
+        <div class="lbl">CSS</div>
+        <div class="code"><button class="copy">Copy</button><pre>.app      { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+.main     { display: flex; flex-direction: column; }
+.header   { height: 60px; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+.page-title { padding: 16px 24px; }                 /* min-height 68px; 88px with back link */
+.content  { flex: 1; padding: 0 var(--main-page-padding); display: flex; flex-direction: column; gap: var(--sections-spacing); }
+.footer   { height: 54px; display: grid; place-items: center; }</pre></div>
+        <p class="figlink">Frame: <a href="https://www.figma.com/design/x5UISMGpSHxp0MACr6my1K/Sally--Design-System?node-id=164-5407" target="_blank" rel="noopener">Job roles (164:5407)</a></p>
+      </article>
+
+      <article class="entry" id="screens" data-k="screenshot reference example list page empty state job roles">
+        <div class="e-head"><h3><a href="#screens">Reference screens</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Three Job Roles screens show the shell in use: the <b>list page</b> (table with search, filter and pagination), the <b>details page</b> and the <b>empty state</b>. Build new pages to match these.</p>
+        <div class="shots">
+          <figure><div class="shot"><img src="img/job-roles-list.png" alt="Job Roles list page: sidebar, header, page title with Add Job Role button, search and filter bar, table and pagination" loading="lazy"></div><figcaption>List page · <a href="https://www.figma.com/design/x5UISMGpSHxp0MACr6my1K/Sally--Design-System?node-id=164-5430" target="_blank" rel="noopener">positions (164:5430)</a></figcaption></figure>
+          <figure><div class="shot"><img src="img/job-role-details.png" alt="Job Role Details page: back link, details card with chips and description, Employees table with status badges and pagination" loading="lazy"></div><figcaption>Details page · <a href="https://www.figma.com/design/x5UISMGpSHxp0MACr6my1K/Sally--Design-System?node-id=164-5558" target="_blank" rel="noopener">Job Role Details (164:5558)</a></figcaption></figure>
+          <figure><div class="shot"><img src="img/job-roles-empty.png" alt="Job Roles empty state: a card with a message, an Add Job Role button and an illustration" loading="lazy"></div><figcaption>Empty state · <a href="https://www.figma.com/design/x5UISMGpSHxp0MACr6my1K/Sally--Design-System?node-id=164-5407" target="_blank" rel="noopener">Job roles (164:5407)</a></figcaption></figure>
+        </div>
+      </article>
+
+      <article class="entry" id="sidebar" data-k="sidebar navigation menu nav item side menu width padding logo submenu active">
+        <div class="e-head"><h3><a href="#sidebar">Sidebar navigation</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Sidebar is <b>280px</b> wide with <b>28px</b> padding left and right. Nav items are <b>40px</b> tall, <b>12px</b> apart, with <b>12px</b> left padding and <b>8px</b> between icon and label. The logo sits <b>28px</b> above the first item.</p>
+        <div class="anatomy">
+          <div class="nav-demo" aria-label="Sidebar example">
+            <div class="it"><i class="ic"></i>Dashboard</div>
+            <div class="it"><i class="ic"></i>Team Calendar</div>
+            <div class="it on"><i class="ic"></i>Org Management</div>
+            <div class="it"><i class="ic"></i>Staff Management</div>
+          </div>
+          <div class="annot">
+            <div><i class="sw" style="background:var(--ov-pad)"></i><span><b>Side padding · 28</b><br>Uses <code>Space 7</code>. This is the only place Space 7 is used.</span></div>
+            <div><i class="sw" style="background:var(--surface)"></i><span><b>Item · 40 tall, radius 8</b><br>Padding-left 12, icon 20 to 24, icon-to-label 8.</span></div>
+            <div><i class="sw" style="background:var(--ov-gap)"></i><span><b>Between items · 12</b><br>Sub-items under an open group are 6 apart.</span></div>
+            <div><i class="sw" style="background:var(--accent-fill)"></i><span><b>Active item</b><br>Primary fill (<code>Primary/Primary</code>) with dark text.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="entry" id="page-title" data-k="page title bar heading buttons actions back link breadcrumb add button">
+        <div class="e-head"><h3><a href="#page-title">Page title bar</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Padding <b>16px</b> top and bottom, <b>24px</b> sides. Title on the left, actions on the right, at least <b>32px</b> apart. Buttons in the action group are <b>12px</b> apart (D-003). Detail pages add a <b>Back to …</b> link above the title (bar becomes 88px tall).</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Part</th><th>Value</th><th>Token</th></tr></thead>
+          <tbody>
+            <tr><td>Bar padding</td><td>16 / 24</td><td><code>Space 4</code> / <code>Space 6</code></td></tr>
+            <tr><td>Title ↔ actions</td><td>32 min</td><td><code>Space 8</code></td></tr>
+            <tr><td>Button ↔ button</td><td>12</td><td><code>Button group spacing</code> (Space 3)</td></tr>
+            <tr><td>Back link icon ↔ text</td><td>8</td><td><code>Space 2</code></td></tr>
+            <tr><td>Bar height</td><td>68 / 88 with back link</td><td>hug content</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+    </section>
+
+    <!-- ============ 2. GRID ============ -->
+    <section class="chapter" id="grid" data-title="Grid">
+      <div class="ch-head"><span class="ch-num">Ch. 2</span><h2>Grid</h2></div>
+
+      <article class="entry" id="base-grid" data-k="8px grid base unit 4px square grid layout grid figma">
+        <div class="e-head"><h3><a href="#base-grid">8px base grid</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Frames use an <b>8px square grid</b>. Sizes and positions should land on multiples of <b>8</b>, with <b>4</b> allowed for small adjustments (icon gaps, badge padding). Off-grid values such as 6, 10 or 20 should be rare and named.</p>
+      </article>
+
+      <article class="entry" id="columns" data-k="column grid columns gutter 12 column content width layout cards side by side">
+        <div class="e-head"><h3><a href="#columns">Column grid for the content area</a></h3><span class="st st-pro">Proposed · Q9 open</span></div>
+        <p class="answer">Figma has <b>no column grid</b> today; content is laid out with auto-layout at full 1112px width. For dashboards and multi-card layouts, use a <b>12-column grid</b> with a <b>24px gutter</b> inside the content area (each column ≈ 70.7px at 1440).</p>
+        <div class="lbl">Common spans at 1112px</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Layout</th><th>Columns</th><th>Width</th></tr></thead>
+          <tbody>
+            <tr><td>Full-width table or card</td><td>12</td><td>1112</td></tr>
+            <tr><td>Two cards</td><td>6 + 6</td><td>544 + 544</td></tr>
+            <tr><td>Three stat cards</td><td>4 + 4 + 4</td><td>354.7 each</td></tr>
+            <tr><td>Four KPI tiles</td><td>3 × 4</td><td>260 each</td></tr>
+            <tr><td>Main + side panel</td><td>8 + 4</td><td>733.3 + 354.7</td></tr>
+          </tbody>
+        </table></div>
+        <div class="lbl">CSS</div>
+        <div class="code"><button class="copy">Copy</button><pre>.content-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 24px; }</pre></div>
+      </article>
+
+      <article class="entry" id="breakpoints" data-k="breakpoints responsive tablet mobile screen size 1440 1280 1920 viewport">
+        <div class="e-head"><h3><a href="#breakpoints">Breakpoints and screen sizes</a></h3><a class="st st-ok" href="#open">Decided · D-001, D-002</a></div>
+        <p class="answer">Team Smart supports <b>desktop</b> (1280px and up) and <b>tablet</b> (768–1279px). There is <b>no phone layout</b>. On wide monitors, tables and dashboards <b>stretch</b> to fill the width; paragraphs and forms stay capped.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Mode</th><th>Width</th><th>Sidebar</th><th>Font sizes mode</th></tr></thead>
+          <tbody>
+            <tr><td>Desktop</td><td>1280px and up</td><td>Open, 280px</td><td><code>Desktop</code></td></tr>
+            <tr><td>Tablet</td><td>768–1279px</td><td>Icon-only; the header menu button opens it</td><td><code>Tablet</code></td></tr>
+            <tr><td>Wide (1920px+)</td><td>same as desktop</td><td>Open, 280px</td><td><code>Desktop</code>; tables stretch, text capped at 72ch, forms at 640px</td></tr>
+          </tbody>
+        </table></div>
+        <p class="figlink">The <code>Mobile</code> font mode stays in Figma but isn't used. Icon-only sidebar width isn't drawn yet; 72px is suggested.</p>
+      </article>
+    </section>
+
+    <!-- ============ 3. SPACING ============ -->
+    <section class="chapter" id="spacing" data-title="Spacing">
+      <div class="ch-head"><span class="ch-num">Ch. 3</span><h2>Spacing</h2></div>
+
+      <article class="entry" id="spacing-scale" data-k="spacing scale tokens space 1 2 3 4 5 6 7 8 9 10 11 values primitive padding margin gap">
+        <div class="e-head"><h3><a href="#spacing-scale">The spacing scale</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Eleven steps in the <code>Spacings</code> collection, from <b>4</b> to <b>56</b>. Click a token to copy it. Prefer the <a href="#semantic-spacing">semantic names</a> in code; use these only when no semantic name fits.</p>
+        <div id="space-scale"></div>
+      </article>
+
+      <article class="entry" id="semantic-spacing" data-k="semantic spacing tokens cards padding main page padding sections spacing form inputs button group listing input field label">
+        <div class="e-head"><h3><a href="#semantic-spacing">Semantic spacing: which token for what</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">These names in the <code>Semantic Variables</code> collection say <b>where</b> a space is used. Reach for these first.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Semantic token</th><th>Points to</th><th>px</th><th>Use for</th></tr></thead>
+          <tbody id="sem-table"></tbody>
+        </table></div>
+      </article>
+
+      <article class="entry" id="card-padding" data-k="card padding details card gap section card inside spacing radius chips tags">
+        <div class="e-head"><h3><a href="#card-padding">Spacing inside a card</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Cards have <b>24px</b> padding, <b>12px</b> radius and <b>16px</b> between stacked items. Chips in a row are <b>8px</b> apart. Measured from the Job Role Details card.</p>
+        <div class="anatomy">
+          <div class="pad-box" aria-label="Job role details card example">
+            <span class="tag" style="top:4px;left:50%;transform:translateX(-50%);color:var(--ov-pad-ink)">24</span>
+            <span class="tag" style="left:3px;top:50%;transform:translateY(-50%);color:var(--ov-pad-ink)">24</span>
+            <div class="gap-stack">
+              <p class="d-title">Air Traffic Coordinator</p>
+              <div class="pills"><span class="pill">Manage DOO</span><span class="pill">Minimum required hours: 160</span></div>
+              <div style="display:flex;flex-direction:column;gap:8px"><span class="d-lbl">Description</span><span class="d-txt">Covers sector coordination between approach and area control during peak hours.</span></div>
+              <div class="d-meta"><span>Created: 12 Apr 2025</span><span>Last updated: 12 Jun 2025</span></div>
+            </div>
+          </div>
+          <div class="annot">
+            <div><i class="sw" style="background:var(--ov-pad)"></i><span><b>Padding · 24</b> · <code>Cards Padding</code></span></div>
+            <div><i class="sw" style="background:var(--ov-gap)"></i><span><b>Stack gap · 16</b> · <code>form inputs</code> / <code>Space 4</code></span></div>
+            <div><i class="sw" style="background:var(--ov-gap)"></i><span><b>Chip gap · 8</b> · <code>Listing Spacing</code></span></div>
+            <div><i class="sw" style="background:var(--surface-2)"></i><span><b>Label ↔ text · 8</b> · <code>Input field &amp; label</code></span></div>
+            <div><i class="sw" style="border:1px solid var(--line)"></i><span><b>Radius · 12</b> · <code>Cards Borders</code></span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="entry" id="section-spacing" data-k="section spacing between sections vertical gap content blocks page sections 32 16">
+        <div class="e-head"><h3><a href="#section-spacing">Space between page sections</a></h3><a class="st st-ok" href="#open">Decided · D-004</a></div>
+        <p class="answer">Use <b>32px</b> (<code>sections spacing</code>) between major blocks, e.g. the details card and the Employees table. Inside one block, such as the title, search bar, table and pagination, use <b>16px</b>.</p>
+      </article>
+    </section>
+
+    <!-- ============ 4. PAGE PATTERNS ============ -->
+    <section class="chapter" id="patterns" data-title="Page patterns">
+      <div class="ch-head"><span class="ch-num">Ch. 4</span><h2>Page patterns</h2></div>
+
+      <article class="entry" id="list-page" data-k="list page table page search filter bar pagination listing index">
+        <div class="e-head"><h3><a href="#list-page">List page</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Title bar with primary action → <b>search and filter bar</b> (36px tall, 16px gap, search 380px wide) → <b>table</b> → <b>pagination</b>. Each block is 16px apart.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Block</th><th>Height</th><th>Spacing</th></tr></thead>
+          <tbody>
+            <tr><td>Search field</td><td>36</td><td>380 wide, radius 8</td></tr>
+            <tr><td>Filter button</td><td>36</td><td>padding 8 / 24, 16 from search</td></tr>
+            <tr><td>Table</td><td>hug</td><td>see <a href="#table">Table</a></td></tr>
+            <tr><td>Pagination</td><td>27</td><td>page buttons 24 × 24, 8 apart, radius 8</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+
+      <article class="entry" id="table" data-k="table row height header cell padding data table rows hover actions 44 64">
+        <div class="e-head"><h3><a href="#table">Table</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Header row <b>44px</b> (padding 16 / 24, text 14 medium). Body rows <b>64px</b> (padding 16 / 24, text 12, 20px between cells). Rows are <b>4px</b> apart. Row actions (edit, delete) appear on hover.</p>
+        <div class="mini-table" aria-label="Table anatomy example">
+          <div class="mt-row h"><span>Job role</span><span>Min required hrs</span><span>Employees</span></div>
+          <div class="mt-row r"><span>Flight Operations Supervisor</span><span>24</span><span>13</span></div>
+          <div class="mt-row r"><span>Safety Compliance Officer</span><span>—</span><span>123</span></div>
+        </div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--ov-pad)"></i>Side padding 24</span>
+          <span><i class="sw" style="background:var(--ov-gap)"></i>Row gap 4</span>
+        </div>
+        <p class="figlink"><a class="st st-ok" href="#open">Decided · D-005</a> Header side padding changed from 32 to 24 so header text lines up with the cells. Applied in Figma on 19 Oct 2026.</p>
+      </article>
+
+      <article class="entry" id="details-page" data-k="details page detail view back link card table employees">
+        <div class="e-head"><h3><a href="#details-page">Details page</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Title bar with a <b>Back to …</b> link → <b>details card</b> (see <a href="#card-padding">card spacing</a>) → <b>32px</b> → related list (section title 16 medium, then search, table and pagination, 16px apart).</p>
+        <p class="figlink">Frame: <a href="https://www.figma.com/design/x5UISMGpSHxp0MACr6my1K/Sally--Design-System?node-id=164-5558" target="_blank" rel="noopener">Job Role Details (164:5558)</a></p>
+      </article>
+
+      <article class="entry" id="empty-state" data-k="empty state no data first use illustration placeholder">
+        <div class="e-head"><h3><a href="#empty-state">Empty state</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">A full-width card with <b>56px</b> top/bottom (<code>Space 11</code>), <b>32px</b> side padding and radius <b>16</b> (<code>Main Sections</code>). Text and button on the left, illustration on the right, <b>48px</b> apart. Title 16 medium, helper text 12, then the primary action.</p>
+        <p class="figlink"><a class="st st-ok" href="#open">Decided · D-006</a> Changed from radius 20 and padding 80. Applied in Figma on 19 Oct 2026.</p>
+      </article>
+
+      <article class="entry" id="modal" data-k="modal popup dialog form add edit width padding buttons fields radius 480">
+        <div class="e-head"><h3><a href="#modal">Modal (popup)</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Width <b>480px</b>, padding <b>32px</b>, radius <b>16</b>. Form fields are <b>16px</b> apart; label to input <b>8px</b>. Footer buttons are right-aligned, <b>36px</b> tall, <b>12px</b> apart, <b>32px</b> below the last field.</p>
+        <div class="anatomy">
+          <div class="modal-demo" aria-label="Add job role modal example">
+            <span class="tag" style="top:8px;left:50%;transform:translateX(-50%);color:var(--ov-pad-ink)">32</span>
+            <div class="stack">
+              <div class="m-h">Add job role</div>
+              <div class="fld"><span class="l">Job role name</span><span class="i"></span></div>
+              <div class="fld"><span class="l">Minimum required hours</span><span class="i"></span></div>
+            </div>
+            <div class="m-foot"><span class="btn">Cancel</span><span class="btn p">Save</span></div>
+          </div>
+          <div class="annot">
+            <div><i class="sw" style="background:var(--ov-pad)"></i><span><b>Padding · 32</b> · <code>Space 8</code></span></div>
+            <div><i class="sw" style="background:var(--ov-gap)"></i><span><b>Field gap · 16</b> · <code>form inputs</code></span></div>
+            <div><i class="sw" style="background:var(--surface-2)"></i><span><b>Label ↔ input · 8</b> · <code>Input field &amp; label</code></span></div>
+            <div><i class="sw" style="border:1px solid var(--line)"></i><span><b>Radius · 16</b> · <code>Modals</code></span></div>
+            <div><i class="sw" style="background:var(--ov-gap)"></i><span><b>Button gap · 12</b> · <code>Button group spacing</code> <a class="st st-ok" href="#open">D-003</a></span></div>
+          </div>
+        </div>
+        <p class="figlink">Variants: form (588 tall), choice with radio buttons (300 tall), confirmation (443 × 270).</p>
+      </article>
+
+      <article class="entry" id="filter-drawer" data-k="filter drawer side panel filters slide over panel 380">
+        <div class="e-head"><h3><a href="#filter-drawer">Filter drawer</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Slides in from the right, <b>380px</b> wide. Header <b>72px</b> (padding 24), scrolling body with <b>24px</b> side padding, footer <b>69px</b> with right-aligned buttons.</p>
+      </article>
+    </section>
+
+    <!-- ============ 5. COMPONENT SPACING ============ -->
+    <section class="chapter" id="components" data-title="Component sizes">
+      <div class="ch-head"><span class="ch-num">Ch. 5</span><h2>Component sizes</h2></div>
+      <article class="entry" id="component-sizes" data-k="button height padding chip tag badge input height icon size header icons avatar component sizes">
+        <div class="e-head"><h3><a href="#component-sizes">Sizes at a glance</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Heights and padding of the components used on these screens.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Component</th><th>Height</th><th>Padding</th><th>Radius</th><th>Text</th></tr></thead>
+          <tbody>
+            <tr><td>Button</td><td>36</td><td>8 / 24 (<code>Buttons Padding</code>)</td><td>8</td><td>14 medium</td></tr>
+            <tr><td>Search field</td><td>36</td><td>icon + 8 gap</td><td>8</td><td>14 regular</td></tr>
+            <tr><td>Chip / tag</td><td>28</td><td>8 / 12</td><td>pill</td><td>12</td></tr>
+            <tr><td>Status badge</td><td>26</td><td>4 / 8</td><td>full</td><td>12</td></tr>
+            <tr><td>Nav item</td><td>40</td><td>left 12</td><td>8</td><td>14</td></tr>
+            <tr><td>Header icon button</td><td>32</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Theme toggle</td><td>36</td><td>8 / 6 / 8 / 12</td><td>pill</td><td>—</td></tr>
+            <tr><td>Pagination button</td><td>24</td><td>—</td><td>8</td><td>14</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+
+      <article class="entry" id="radius" data-k="radius border radius rounded corners rounded-sm lg xl 2xl full">
+        <div class="e-head"><h3><a href="#radius">Corner radius</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Five radius tokens. Small controls <b>8</b>, cards <b>12</b>, page sections and modals <b>16</b>, pills <b>full</b>.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Token</th><th>px</th><th>Semantic use</th></tr></thead>
+          <tbody>
+            <tr><td><code>rounded-sm</code></td><td>4</td><td class="wrap">Small avatar</td></tr>
+            <tr><td><code>rounded-lg</code></td><td>8</td><td class="wrap">Buttons, input fields, nav items</td></tr>
+            <tr><td><code>rounded-xl</code></td><td>12</td><td class="wrap">Cards</td></tr>
+            <tr><td><code>rounded-2xl</code></td><td>16</td><td class="wrap">Main sections, modals</td></tr>
+            <tr><td><code>rounded-full</code></td><td>9999</td><td class="wrap">Badges, chips, toggles</td></tr>
+          </tbody>
+        </table></div>
+      </article>
+    </section>
+
+    <!-- ============ 6. TYPE ============ -->
+    <section class="chapter" id="type" data-title="Typography">
+      <div class="ch-head"><span class="ch-num">Ch. 6</span><h2>Typography</h2></div>
+
+      <article class="entry" id="type-scale" data-k="font size type scale typography text styles poppins h1 h2 h3 h4 body description line height weight">
+        <div class="e-head"><h3><a href="#type-scale">Text styles</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">One family, <b>Poppins</b>, in four weights. Eleven text styles: four headings, four <b>Body</b> styles (medium, for labels and UI) and three <b>Description</b> styles (regular, for running text). Sizes shrink on tablet through the <code>Font sizes</code> modes (no phone layout, D-001).</p>
+        <div class="seg" role="group" aria-label="Screen size" id="type-seg">
+          <button aria-pressed="true" data-v="0">Desktop</button>
+          <button aria-pressed="false" data-v="1">Tablet</button>
+          
+        </div>
+        <div id="type-list" style="margin-top:8px"></div>
+      </article>
+
+      <article class="entry" id="type-usage" data-k="which font size for page title table header table cell card title label helper text where used">
+        <div class="e-head"><h3><a href="#type-usage">Which style where</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">The sizes used on the Job Roles screens, mapped to their text styles.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Element</th><th>Size / line</th><th>Text style</th></tr></thead>
+          <tbody>
+            <tr><td>Page title (“Job Roles”)</td><td>20 / 28 semibold</td><td><span class="st st-dec">No style</span> closest: <code>Medium/Body 1</code> (20 / 24 medium)</td></tr>
+            <tr><td>Card title, modal title</td><td>18 / 22 medium</td><td><code>Medium/Body 2</code></td></tr>
+            <tr><td>Section title (“Employees”)</td><td>16 / 20 medium</td><td><code>Medium/Body 3</code></td></tr>
+            <tr><td>Table header, field label, button</td><td>14 / 20 medium</td><td><code>Medium/14 Medium</code> (duplicate of <code>Body 4</code>, which is 14 / 18)</td></tr>
+            <tr><td>Input text and placeholder</td><td>14 / 20 regular</td><td><code>Body/SM Regular</code></td></tr>
+            <tr><td>Nav item</td><td>14 / 24 regular, medium when open</td><td><span class="st st-dec">No style</span></td></tr>
+            <tr><td>Nav sub-item</td><td>12 / 20 regular, medium when active</td><td><span class="st st-dec">No style</span></td></tr>
+            <tr><td>Table cell, chip, helper text</td><td>12 / 14</td><td><code>Regular/Description 3</code></td></tr>
+            <tr><td>Created / updated meta, “(Optional)”</td><td>12 / 14 (was 10)</td><td><code>Regular/Description 3</code> <a class="st st-ok" href="#open">D-007</a></td></tr>
+          </tbody>
+        </table></div>
+      </article>
+
+      <article class="entry" id="type-issues" data-k="roboto font inconsistent off system 10px material theme">
+        <div class="e-head"><h3><a href="#type-issues">Type outside the system</a></h3><span class="st st-dec">Partly open</span></div>
+        <div class="issues">
+          <div class="issue"><a class="st st-ok" href="#open">D-007</a><div><div class="what">The header's “By” and the footer switch from Roboto to Poppins</div><div class="why">The footer uses <code>Regular/Description 2</code> (Poppins 14). The logo artwork stays as it is.</div></div></div>
+          <div class="issue"><a class="st st-ok" href="#open">D-007</a><div><div class="what">No text below 12px</div><div class="why">The 10px meta text and “(Optional)” labels move to <code>Description 3</code> (12px), which is easier to read on control-room monitors.</div></div></div>
+          <div class="issue"><span class="st st-dec">Style</span><div><div class="what">The page title and nav items have no text style</div><div class="why">The page title is 20 / 28 semibold, which matches no style. Either update <code>Body 1</code> or add a <code>Page title</code> style, then apply styles to nav items too.</div></div></div>
+          <div class="issue"><span class="st st-dec">Variables</span><div><div class="what">Leftover <code>material-theme/*</code> and duplicate font variables</div><div class="why">For example <code>Medium/14 medium</code> and <code>Medium/14 Medium</code> both exist. Remove the duplicates so developers see one name per style.</div></div></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ 7. TOKENS ============ -->
+    <section class="chapter" id="tokens" data-title="Tokens">
+      <div class="ch-head"><span class="ch-num">Ch. 7</span><h2>Tokens to copy</h2></div>
+      <article class="entry" id="css-vars" data-k="css variables custom properties tokens export code root copy">
+        <div class="e-head"><h3><a href="#css-vars">CSS custom properties</a></h3><span class="st st-fig">In Figma</span></div>
+        <p class="answer">Every value in this guide as CSS variables, named after the Figma variables. Font sizes switch at the proposed breakpoints.</p>
+        <div class="code"><button class="copy">Copy</button><pre id="css-out"></pre></div>
+      </article>
+    </section>
+
+    <!-- ============ 8. DECISIONS ============ -->
+    <section class="chapter" id="open" data-title="Decisions">
+      <div class="ch-head"><span class="ch-num">Ch. 8</span><h2>Decisions</h2></div>
+      <article class="entry" id="open-list" data-k="decisions decision log open questions why changed d-001 d-002 d-003 d-004 d-005 d-006 d-007">
+        <div class="e-head"><h3><a href="#open-list">What we decided and what is still open</a></h3><a class="st st-ok" href="https://claude.ai/code/artifact/c1240e14-20b5-4c00-ba0c-02b647532dec" target="_blank" rel="noopener">Decision log</a></div>
+        <p class="answer">Seven layout decisions were made on <b>19 Oct 2026</b>; two questions are still open. The reasons and rejected options are in the <a href="https://claude.ai/code/artifact/c1240e14-20b5-4c00-ba0c-02b647532dec" target="_blank" rel="noopener">Team Smart Decision Log</a>. D-003 to D-007 were applied to the Job Roles screens on 19 Oct 2026 (originals on the “Audit – before” page). D-001 and D-002 have no tablet or wide frames yet.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>ID</th><th>Decision</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>D-001</td><td class="wrap">Desktop (1280+) and tablet (768–1279, icon-only sidebar). No phone layout.</td><td><span class="st st-ok">Decided</span></td></tr>
+            <tr><td>D-002</td><td class="wrap">Wide monitors: tables and dashboards stretch; text and forms stay capped.</td><td><span class="st st-ok">Decided</span></td></tr>
+            <tr><td>D-003</td><td class="wrap">Buttons side by side are 12 apart everywhere.</td><td><span class="st st-ok">Decided</span></td></tr>
+            <tr><td>D-004</td><td class="wrap">32 between major blocks, 16 inside a block.</td><td><span class="st st-ok">Decided</span></td></tr>
+            <tr><td>D-005</td><td class="wrap">Table header and rows both use 24 side padding.</td><td><span class="st st-ok">Decided</span></td></tr>
+            <tr><td>D-006</td><td class="wrap">Empty state: radius 16, padding 56.</td><td><span class="st st-ok">Decided</span></td></tr>
+            <tr><td>D-007</td><td class="wrap">Nothing below 12px; Poppins replaces Roboto in the header and footer.</td><td><span class="st st-ok">Decided</span></td></tr>
+            <tr><td>Q8</td><td class="wrap">Add text styles for the page title and nav items; remove duplicate and material-theme styles?</td><td><span class="st st-dec">Open</span></td></tr>
+            <tr><td>Q9</td><td class="wrap">Add a 12-column grid to the content area in Figma?</td><td><span class="st st-dec">Open</span></td></tr>
+          </tbody>
+        </table></div>
+      </article>
+    </section>
+
+    <footer>Measured from the Team Smart Figma file on 19 Oct 2026. When a value changes in Figma, update it here in the same week and add a line to the changelog.</footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  var SPACE=[[1,4,'XXS padding · badge padding · icon nudges'],[2,8,'Label ↔ input · chips and list items · title-bar buttons'],[3,12,'Nav item gap · button group (token)'],[4,16,'Form fields · stack inside a card · page title padding'],[5,20,'Table cell gap'],[6,24,'Card padding · main page padding · button side padding'],[7,28,'Sidebar side padding'],[8,32,'Sections · modal padding · title ↔ actions'],[9,40,'Large padding'],[10,48,'XL padding · empty-state text ↔ illustration'],[11,56,'Largest step']];
+  var SEM=[['XXS Padding','Space 1',4,'Badges, tight icon spacing'],['Input field & label','Space 2',8,'Label to its input; label to its value'],['Listing Spacing','Space 2',8,'Chips, tags and list items in a row'],['Button group spacing','Space 3',12,'Buttons side by side'],['form inputs','Space 4',16,'Field to field in forms and modals'],['Cards Padding','Space 6',24,'Inside cards'],['main page padding','Space 6',24,'Content area left and right'],['sections spacing','Space 8',32,'Between major page blocks'],['Large padding','Space 9',40,'Large containers'],['XL Padding','Space 10',48,'Hero or empty-state containers']];
+  var TYPE=[
+    ['Bold/H1','H1',[48,40,32],48,700,'Dashboard hero numbers'],
+    ['Semi Bold/H2','H2',[40,32,28],44,600,'Large section headings'],
+    ['Semi Bold/H3','H3',[32,28,24],40,600,'Page headings in reports'],
+    ['Semi Bold/H4','H4',[24,24,20],28,600,'Panel headings'],
+    ['Medium/Body 1','Body 1',[20,20,18],24,500,'Page title'],
+    ['Medium/Body 2','Body 2',[18,18,16],22,500,'Card title'],
+    ['Medium/Body 3','Body 3',[16,16,14],20,500,'Section and modal titles'],
+    ['Medium/Body 4','Body 4',[14,14,12],18,500,'Labels, table headers, buttons'],
+    ['Regular/Description 1','Body 3',[16,16,14],20,400,'Long-form text'],
+    ['Regular/Description 2','Body 4',[14,14,12],18,400,'Body copy, footer'],
+    ['Regular/Description 3','Body 5',[12,12,12],14,400,'Table cells, chips, helper text']
+  ];
+  var SAMPLE={'H1':'1,248 shifts','H2':'Shift planning','H3':'Weekly coverage','H4':'Sector staffing','Body 1':'Job Roles','Body 2':'Air Traffic Coordinator','Body 3':'Employees','Body 4':'Minimum required hours'};
+  function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+
+  document.getElementById('space-scale').innerHTML=SPACE.map(function(s){
+    return '<div class="srow"><button class="tok" data-copy="var(--space-'+s[0]+')" title="Copy var(--space-'+s[0]+')">Space '+s[0]+'</button><span class="px">'+s[1]+'px</span><span class="bar" style="width:'+s[1]*3+'px;max-width:100%"></span><span class="use">'+s[2]+'</span></div>'}).join('');
+  document.getElementById('sem-table').innerHTML=SEM.map(function(s){
+    return '<tr><td><button class="tok" data-copy="var(--'+slug(s[0])+')">'+s[0]+'</button></td><td><code>'+s[1]+'</code></td><td>'+s[2]+'</td><td class="wrap">'+s[3]+'</td></tr>'}).join('');
+
+  var typeList=document.getElementById('type-list');
+  function renderType(m){
+    typeList.innerHTML=TYPE.map(function(t){var sz=t[2][m],lh=Math.max(t[3]-(t[2][0]-sz),Math.round(sz*1.15));
+      var sample=t[0].indexOf('Description')>-1?'Shift demand for Jeddah approach is above plan this week.':(SAMPLE[t[1]]||t[0]);
+      return '<div class="ts"><div class="meta"><button class="tok" data-copy="'+t[0]+'">'+t[0]+'</button><br>'+sz+' / '+(m?lh:t[3])+' · '+t[4]+'<br>'+t[5]+'</div><div class="sample" style="font-size:'+sz+'px;line-height:'+(m?lh:t[3])+'px;font-weight:'+t[4]+'">'+sample+'</div></div>'}).join('');
+  }
+  renderType(0);
+  var tseg=document.getElementById('type-seg');
+  tseg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(tseg.children,function(c){c.setAttribute('aria-pressed',c===b)});renderType(+b.dataset.v)});
+
+  var sizes=[['h1',[48,40,32]],['h2',[40,32,28]],['h3',[32,28,24]],['h4',[24,24,20]],['body-1',[20,20,18]],['body-2',[18,18,16]],['body-3',[16,16,14]],['body-4',[14,14,12]],['body-5',[12,12,12]]];
+  var css=':root {\n  /* Spacings (primitive) */\n'+SPACE.map(function(s){return '  --space-'+s[0]+': '+s[1]+'px;'}).join('\n')+
+    '\n\n  /* Semantic spaces */\n'+SEM.map(function(s){return '  --'+slug(s[0])+': var(--space-'+s[1].split(' ')[1]+');  /* '+s[2]+'px */'}).join('\n')+
+    '\n\n  /* Radius */\n  --rounded-sm: 4px;\n  --rounded-lg: 8px;\n  --rounded-xl: 12px;\n  --rounded-2xl: 16px;\n  --rounded-full: 9999px;\n\n  /* Shell */\n  --sidebar-width: 280px;\n  --header-height: 60px;\n  --footer-height: 54px;\n\n  /* Type: Poppins, desktop sizes */\n  --font-sans: "Poppins", -apple-system, "Segoe UI", sans-serif;\n'+
+    sizes.map(function(s){return '  --font-'+s[0]+': '+s[1][0]+'px;'}).join('\n')+
+    '\n}\n\n/* Tablet: 768–1279px (D-001) */\n@media (max-width: 1279px) {\n  :root {\n'+sizes.filter(function(s){return s[1][1]!==s[1][0]}).map(function(s){return '    --font-'+s[0]+': '+s[1][1]+'px;'}).join('\n')+'\n  }\n}\n/* No phone layout (D-001) */';
+  document.getElementById('css-out').textContent=css;
+
+  function copy(text,btn){
+    var done=function(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o},1200)};
+    try{navigator.clipboard.writeText(text).then(done,function(){sel(btn)})}catch(e){sel(btn)}
+  }
+  function sel(btn){var pre=btn.parentNode.querySelector('pre')||btn;var r=document.createRange();r.selectNodeContents(pre);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('.copy');if(b){copy(b.parentNode.querySelector('pre').textContent,b);return}
+    var t=e.target.closest('.tok[data-copy]');if(t){copy(t.dataset.copy,t)}
+  });
+
+  var chapters=[].slice.call(document.querySelectorAll('.chapter'));
+  document.getElementById('toc-list').innerHTML=chapters.map(function(c,i){
+    return '<li><a class="ch" href="#'+c.id+'"><span>'+(i+1)+'</span>'+c.dataset.title+'</a><ol>'+
+      [].map.call(c.querySelectorAll('.entry'),function(e){return '<li><a href="#'+e.id+'" data-id="'+e.id+'">'+e.querySelector('h3').textContent+'</a></li>'}).join('')+'</ol></li>'}).join('');
+  if(window.matchMedia('(max-width:900px)').matches)document.getElementById('toc-details').open=false;
+  var tocLinks=[].slice.call(document.querySelectorAll('.toc ol ol a'));
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){tocLinks.forEach(function(a){a.classList.toggle('active',a.dataset.id===en.target.id)})}})},{rootMargin:'-90px 0px -65% 0px'});
+    document.querySelectorAll('.entry').forEach(function(e){io.observe(e)});
+  }
+
+  var entries=[].map.call(document.querySelectorAll('.entry'),function(el){
+    return {el:el,id:el.id,title:el.querySelector('h3').textContent,ch:el.closest('.chapter').dataset.title,
+      body:(el.querySelector('.answer')||el).textContent.replace(/\s+/g,' ').trim(),k:el.dataset.k||'',
+      hay:(el.querySelector('h3').textContent+' '+(el.dataset.k||'')+' '+el.textContent).toLowerCase().replace(/\s+/g,' ')}
+  });
+  var q=document.getElementById('q'),res=document.getElementById('results'),sel_i=0,items=[];
+  function esc(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function hl(s,terms){var out=esc(s);terms.forEach(function(t){out=out.replace(new RegExp('('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>')});return out}
+  function snippet(s,terms){var low=s.toLowerCase(),p=-1;terms.some(function(t){p=low.indexOf(t);return p>=0});return p<40?s:'…'+s.slice(p-30)}
+  function search(v){
+    var terms=v.toLowerCase().split(/\s+/).filter(Boolean);
+    if(!terms.length){close();return}
+    items=entries.filter(function(e){return terms.every(function(t){return e.hay.indexOf(t)>=0})}).map(function(e){
+      var tl=e.title.toLowerCase(),sc=terms.reduce(function(a,t){return a+(tl.indexOf(t)>=0?4:0)+(e.k.indexOf(t)>=0?2:0)+(e.body.toLowerCase().indexOf(t)>=0?2:0)},0);
+      return {id:e.id,ch:e.ch,t:e.title,s:snippet(e.body,terms),score:sc}}).sort(function(a,b){return b.score-a.score}).slice(0,8);
+    sel_i=0;
+    res.innerHTML=items.length?items.map(function(it,i){return '<button class="result" role="option" type="button" data-i="'+i+'" aria-selected="'+(i===0)+'"><span class="r-ch">'+esc(it.ch)+'</span><span class="r-t">'+hl(it.t,terms)+'</span><span class="r-s">'+hl(it.s,terms)+'</span></button>'}).join('')
+      :'<div class="empty">Nothing matches “'+esc(v)+'”. Try <b>padding</b>, <b>table</b>, <b>modal</b> or <b>H2</b>.</div>';
+    res.hidden=false;q.setAttribute('aria-expanded','true');
+  }
+  function close(){res.hidden=true;q.setAttribute('aria-expanded','false')}
+  function go(it){
+    if(!it)return;close();var el=document.getElementById(it.id);
+    el.scrollIntoView({block:'start'});
+    try{history.replaceState(null,'','#'+it.id)}catch(e){}
+    el.classList.add('flash');setTimeout(function(){el.classList.remove('flash')},1400);
+  }
+  q.addEventListener('input',function(){search(q.value)});
+  q.addEventListener('focus',function(){if(q.value)search(q.value)});
+  q.addEventListener('keydown',function(e){
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){if(!items.length)return;e.preventDefault();sel_i=(sel_i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;[].forEach.call(res.children,function(c,i){c.setAttribute('aria-selected',i===sel_i);if(i===sel_i)c.scrollIntoView({block:'nearest'})})}
+    else if(e.key==='Enter'){e.preventDefault();go(items[sel_i])}
+    else if(e.key==='Escape'){close();q.blur()}
+  });
+  res.addEventListener('click',function(e){var b=e.target.closest('.result');if(b)go(items[+b.dataset.i])});
+  document.addEventListener('click',function(e){if(!e.target.closest('.search'))close()});
+  document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==q&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();q.focus()}});
+  document.querySelectorAll('.chip[data-q]').forEach(function(c){c.onclick=function(){q.value=c.dataset.q;q.focus();search(q.value)}});
+})();
+</script>
