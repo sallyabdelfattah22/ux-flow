@@ -22,6 +22,10 @@ Paste a Figma flow link, screenshots, or a link to a prototype built with an AI 
 - No screenshots and no per-screen descriptions. Two outputs: a shareable HTML guide and its developer .md.
 - Applies your feedback to the skill itself, so every note sticks.
 
+## Audit checklist
+
+Every run audits the design against the same checklist: 79 checks in 15 areas, each finding rated Critical, Major or Minor with a fix. See the full list in [AUDIT-CHECKLIST.md](AUDIT-CHECKLIST.md).
+
 ## Install
 
 1. Download [`ux-flow.zip`](ux-flow.zip) from this repo (click it, then **Download raw file**).
