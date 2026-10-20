@@ -7,7 +7,7 @@ Developers search the guide ("modal padding", "timeline block", "breakpoints"), 
 - **New guide**: copy `assets/guide-template.html`; keep its machinery (search with keyboard navigation, contents with active section, copy buttons, both themes). Replace the `:root` tokens with the product's own colors and font, the brand mark and the title (`<Product> Guide`).
 - **Existing guide**: Artifact `read` it, keep everything, change only General (shared values) and this flow's tab. Same URL, same title.
 - No images: no screenshots, crops or image files anywhere. Link frames in Figma.
-- No download buttons; tokens are a CSS block with a Copy button.
+- Tokens are a CSS block with a Copy button. The only file offered is the developer .md: a link in the intro (`<product>-handoff.md`, published beside the page) plus a Save .md button that calls `claude.use("downloads")` and stays hidden when that is unavailable.
 
 ## Tabs
 

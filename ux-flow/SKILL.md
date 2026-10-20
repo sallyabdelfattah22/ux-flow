@@ -1,11 +1,11 @@
 ---
 name: ux-flow
-description: One-link UX handoff for a Figma flow or screenshots. Every run, without being asked, it measures the frames, audits them with the ux-audit checklist, and updates ONE visual developer guide per product (a published HTML page) — a General tab with the shared design system (spacing, type, radius, grid, shell, component sizes, tokens, system issues) plus one tab per flow (notes, user flow diagram, to-scale layout spacing, responsive rules, components and states, clicks, data formats, before/after, decisions, audit). A later run with the same link updates that flow's tab. Use this whenever the user pastes a Figma flow, section or frame link (or screenshots) and wants it documented, audited or handed off, even with no instructions, or says "run ux-flow", "full pass", "re-run on this flow", or "what changed".
+description: One-link UX handoff for a Figma flow or screenshots. Every run, without being asked, it measures the frames, audits them with the ux-audit checklist, and updates ONE visual developer guide per product (a published HTML page) plus its developer .md (the same content as Markdown, user flows as Mermaid) — a General tab with the shared design system (spacing, type, radius, grid, shell, component sizes, tokens, system issues) plus one tab per flow (notes, user flow diagram, to-scale layout spacing, responsive rules, components and states, clicks, data formats, before/after, decisions, audit). A later run with the same link updates that flow's tab. Use this whenever the user pastes a Figma flow, section or frame link (or screenshots) and wants it documented, audited or handed off, even with no instructions, or says "run ux-flow", "full pass", "re-run on this flow", or "what changed".
 ---
 
 # UX Flow
 
-One Figma link in, **one visual guide per product out**: a published HTML page (Artifact) titled `<Product> Guide`, with a **General** tab first and **one tab per flow**. Everything lives in it — no Claude Doc, no .md files, no token files, no separate report, nothing to download, no screenshots.
+One Figma link in, **one visual guide per product out**: a published HTML page (Artifact) titled `<Product> Guide`, with a **General** tab first and **one tab per flow**. Everything lives in it — no Claude Doc, no token files, no separate report, no screenshots. **Plus one developer .md** (`<product>-handoff.md`): the same content as Markdown for repos and AI coding tools, written from the guide by `scripts/guide2md.py` on every run, so the two never disagree.
 
 Run the whole pipeline on every link without asking what to produce: snapshot (first run of a flow), measure, audit, update the guide. Ask only for missing context (step 0) or scope when a section holds more than 20 frames. Skip a part only when the user says so ("no audit").
 
@@ -33,7 +33,7 @@ Shared values live only in General; a flow tab records only what is specific or 
 - **Edit only the files the user allows.** When the user names a file as off-limits (or names the only file to edit), never write to the other files, not even the snapshot; their fixes stay *Proposed* in the guide, and Before / after says the file is read-only. If such a file was already edited, offer to revert it exactly.
 - **Spacing is visualized.** Every repeated container gets a to-scale diagram (`scripts/anatomy.py`): padding, gaps, sizes, radius, with token chips.
 - **No screenshots or images** in the guide. Screenshots are taken only so Claude can see the screens; never published.
-- **No downloads.** Tokens are a CSS block with a Copy button.
+- **Two outputs, nothing else.** The guide and its .md. Tokens are a CSS block with a Copy button; the .md is published beside the guide (linked in the intro, with a Save .md button through the `downloads` capability) and sent to the user as a file.
 - **Audit always included**, in each flow's Audit chapter.
 - Visuals and tables over prose; one-line answers; no intros or conclusions. Status pills: In Figma · Proposed · Needs decision · Decided D-00x. Never present a proposal as a measurement; never round a measured value.
 
@@ -70,7 +70,7 @@ Follow the audit instructions and checklist exactly: the user's `ux-audit` skill
 
 ## 4. Update the guide
 
-Follow `references/guide.md`. New guide: start from `assets/guide-template.html`. Existing guide: Artifact `read` it, keep everything, update General with anything new or shared, and add or update this flow's tab. Look once at desktop and phone width (no horizontal scroll), then publish to the **same URL**.
+Follow `references/guide.md`. New guide: start from `assets/guide-template.html`. Existing guide: Artifact `read` it, keep everything, update General with anything new or shared, and add or update this flow's tab. Look once at desktop and phone width (no horizontal scroll). Then run `python3 scripts/guide2md.py <guide.html> <product>-handoff.md` and publish the guide to the **same URL** with the .md in `files` and `capabilities: {downloads: true}`; send the .md with SendUserFile.
 
 ## 5. Decisions
 
@@ -92,14 +92,15 @@ Save a memory note when the memory rules allow: product, guide URL, flows with t
 
 1. `scripts/diff.js` (snapshot vs current).
 2. Re-audit: previous findings Fixed / Still open / Regressed, then new issues only.
-3. Update the flow's tab (before / after, notes, user flow, diagrams, values, audit) and General if shared values changed. A change with no decision or finding gets "Why: to confirm". Republish to the same URL.
+3. Update the flow's tab (before / after, notes, user flow, diagrams, values, audit) and General if shared values changed, then regenerate the .md. A change with no decision or finding gets "Why: to confirm". Republish to the same URL.
 4. Reply with what changed and anything to confirm.
 
 ## Files in this skill
 
 - `scripts/snapshot.js`, `scripts/measure.js`, `scripts/dev-extras.js`, `scripts/audit-measure.js`, `scripts/diff.js` — `use_figma` code; replace the `__PLACEHOLDERS__`
 - `scripts/anatomy.py` — to-scale spacing diagrams for the Layout spacing chapters
-- `scripts/userflow.py` — user flow diagrams for the User flow chapters
+- `scripts/userflow.py` — user flow diagrams for the User flow chapters (also stores them as JSON for the .md)
+- `scripts/guide2md.py` — writes the developer .md from the guide (tables, decisions, Mermaid user flows)
 - `references/guide.md` — tabs, chapters, switcher, writing rules
 - `references/ux-audit/` — bundled audit instructions and checklist
 - `references/ux-doc/` — before / after write-up templates

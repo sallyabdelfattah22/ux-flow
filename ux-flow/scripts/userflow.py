@@ -16,6 +16,7 @@ edges: list of (from_id, to_id, label, status[, via])
           'open'    — destination not in the design: an open question, ask the user (dashed, red, '?')
 Never draw an 'open' edge as if it were known; add it to Decisions and ask.
 Colors are the guide template's CSS variables, so the diagram follows light and dark themes.
+The nodes and edges are also stored as JSON in data-uflow, so scripts/guide2md.py can write them as Mermaid.
 """
 CW, RH, NW, NH = 214, 100, 150, 50
 
@@ -25,7 +26,9 @@ def uflow(nodes, edges, caption=''):
     cols = max(n[3] for n in nodes) + 1; rows = max(n[4] for n in nodes) + 1
     W, H = cols * CW + 24, rows * RH + 24
     pos = {n[0]: (24 + n[3] * CW + (CW - NW) / 2 - 12, 24 + n[4] * RH + (RH - NH) / 2 - 12, n) for n in nodes}
-    o = [f'<div class="uflow" style="overflow-x:auto"><svg viewBox="0 0 {W} {H}" style="width:100%;min-width:{int(W*0.72)}px;display:block" role="img" aria-label="{_esc(caption)}">',
+    import json, html as _h
+    data = _h.escape(json.dumps({'nodes': [[n[0], n[1], n[2]] for n in nodes], 'edges': [list(e[:4]) for e in edges]}), quote=True)
+    o = [f'<div class="uflow" data-uflow="{data}" style="overflow-x:auto"><svg viewBox="0 0 {W} {H}" style="width:100%;min-width:{int(W*0.72)}px;display:block" role="img" aria-label="{_esc(caption)}">',
          '<defs>' + ''.join(f'<marker id="uf-{k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{c}"/></marker>'
                             for k, c in (('linked', 'var(--accent)'), ('design', 'var(--muted)'), ('open', 'var(--danger)'))) + '</defs>']
     def box(i):

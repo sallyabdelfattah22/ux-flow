@@ -2,7 +2,7 @@
 
 A Claude skill that turns one Figma flow link into a developer handoff guide.
 
-Paste a Figma flow link (or screenshots). Claude measures the screens, audits them, and adds them to **one visual guide per product**: a **General** tab with the shared design system, plus **one tab per flow**.
+Paste a Figma flow link (or screenshots). Claude measures the screens, audits them, and adds them to **one visual guide per product**: a **General** tab with the shared design system, plus **one tab per flow**. It also writes a **developer .md** with the same content as Markdown (user flows as Mermaid), ready for repos and AI coding tools.
 
 ## What each flow gets
 
@@ -19,7 +19,7 @@ Paste a Figma flow link (or screenshots). Claude measures the screens, audits th
 - Runs the whole pipeline on every link, including the audit, without being asked.
 - **Asks, doesn't assume.** Every open question is put to you before the run ends.
 - **Asks before changing Figma.** It lists each change and edits only what you approve. It only edits files you allow.
-- No screenshots, no per-screen descriptions, nothing to download. The output is a single shareable HTML guide.
+- No screenshots and no per-screen descriptions. Two outputs: a shareable HTML guide and its developer .md.
 - Applies your feedback to the skill itself, so every note sticks.
 
 ## Install
@@ -45,7 +45,8 @@ ux-flow/
 │   ├── audit-measure.js     # audit evidence
 │   ├── diff.js              # before vs current on re-runs
 │   ├── anatomy.py           # to-scale spacing diagrams
-│   └── userflow.py          # user flow diagrams
+│   ├── userflow.py          # user flow diagrams
+│   └── guide2md.py          # developer .md from the guide
 └── assets/
     └── guide-template.html  # starting guide page
 ```
